@@ -1,0 +1,7 @@
+include ':demo'
+
+//include ':android-skin-loader-lib', ':android-skin-loader-skin'
+
+
+include ':fskin'
+include ':demo-skin'

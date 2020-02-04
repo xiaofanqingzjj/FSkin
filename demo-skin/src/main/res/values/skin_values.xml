@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <color name="SC0">#333333</color>
+    <color name="SC0A95">#F0333333</color>
+
+    <color name="SC1">#F7E027</color>
+    <color name="SC1A30">#48F7E027</color>
+    <color name="SC1A50">#7eF7E027</color>
+    <color name="SC1A60">#99F7E027</color>
+
+    <color name="SC2">#f0ded8</color>
+    <color name="SC2A10">#1Af0ded8</color>
+    <color name="SC2A30">#48f0ded8</color>
+    <color name="SC2A50">#7Ef0ded8</color>
+    <color name="SC2A60">#99f0ded8</color>
+    <color name="SC2A70">#B3f0ded8</color>
+    <color name="SC2A80">#CCf0ded8</color>
+
+
+
+    <color name="SC3">#41CAE3</color>
+
+    <color name="SC4">#ED5252</color>
+
+
+    <color name="SC11">#FEE834</color>
+    <color name="SC12">#F9F6EB</color>
+
+    <color name="SC21">#ECEBEB</color>
+    <color name="SC22">#6F625F</color>
+
+
+    <color name="SC31">#54DEF8</color>
+    <color name="SC31A50">#7e54DEF8</color>
+    <color name="SC31A60">#9954DEF8</color>
+
+
+    <color name="SC32">#536BC9</color>
+
+
+
+
+
+    <dimen name="action_bar_title_size">16dp</dimen>
+
+    <dimen name="tab_bar_text_size">12dp</dimen>
+
+
+    <dimen name="list_padding">10dp</dimen>
+</resources>
