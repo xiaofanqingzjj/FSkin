@@ -16,6 +16,20 @@
 ## 用法
 
 
+#### 0. 在项目中添加依赖
+
+```groovy
+repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.github.xiaofanqingzjj:FSkin:Tag'
+}
+```
+
+
 #### 1. 在`Application`中进行初始化皮肤组件
 
 ```kotlin
@@ -35,22 +49,21 @@ class YourApplication : Application {
 
 #### 3. 加载特定的皮肤
 
-在你需要切换皮肤的地方，调用applySkin方法切换到对应的皮肤包
+在你需要切换皮肤的地方，调用applySkin方法切换到对应的皮肤包，当然别忘了申请sd卡读写权限。
 
 ```kotlin
-     SkinManager.applySkin("<Your skin apk path>", object : SkinManager.ILoaderListener {
-                    override fun onStart() {
-                    }
+ SkinManager.applySkin("<Your skin apk path>", object : SkinManager.ILoaderListener {
+        override fun onStart() {
+        }
 
-                    override fun onSuccess() {
-                        Toast.makeText(context, "皮肤切换成功", Toast.LENGTH_SHORT).show()
-                    }
+        override fun onSuccess() {
+            Toast.makeText(context, "皮肤切换成功", Toast.LENGTH_SHORT).show()
+        }
 
-                    override fun onFailed(reason: String?) {
-                        Toast.makeText(context, "皮肤切换失败$reason", Toast.LENGTH_SHORT).show()
-                    }
-
-                })
+        override fun onFailed(reason: String?) {
+            Toast.makeText(context, "皮肤切换失败$reason", Toast.LENGTH_SHORT).show()
+        }
+    })
 
 ```
 
