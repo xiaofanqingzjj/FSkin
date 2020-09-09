@@ -6,6 +6,12 @@ apply plugin: 'kotlin-kapt'
 android {
     compileSdkVersion compile_sdk_version
 
+    aaptOptions {
+        // 生成资源id到资源名的映射文件
+        additionalParameters "--emit-ids", "${project.file('public.txt')}"
+
+    }
+
     defaultConfig {
         applicationId "com.tencent.fskin.demo"
         minSdkVersion min_sdk_version
@@ -23,7 +29,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation project(':fskin')
+    implementation project(':fskin')
     implementation "com.android.support:appcompat-v7:$support_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -31,7 +37,7 @@ dependencies {
 
     implementation 'com.github.xiaofanqingzjj:PermissionsRequestor:v1.0.0'
 
-    implementation 'com.github.xiaofanqingzjj:FSkin:1.0.0'
+//    implementation 'com.github.xiaofanqingzjj:FSkin:1.0.0'
 }
 
 final def TARGET_SKIN_DIR = '../skin-package/'

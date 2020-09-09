@@ -1,9 +1,11 @@
 package com.tencent.fskin.attrs
 
+import android.content.res.Resources
 import android.view.View
 import android.widget.TextView
 import com.tencent.fskin.SkinManager
 import com.tencent.fskin.SkinElementAttr
+import com.tencent.fskin.SkinResourcesProxy
 
 
 /**
@@ -17,12 +19,12 @@ class TextColorAttr : SkinElementAttr() {
         const val TAG = "TextColorAttr"
     }
 
-    override fun apply(view: View?) {
-        super.apply(view)
+    override fun apply(view: View?, skinResourcesProxy: Resources) {
+        super.apply(view, skinResourcesProxy)
 //        Log.d(TAG, "applyView:$view, this: $this")
 
         (view as? TextView)?.run {
-            setTextColor(SkinManager.skinResourcesProxy.getColorStateList(attrValueRefId))
+            setTextColor(skinResourcesProxy.getColorStateList(attrValueRefId))
         }
     }
 }

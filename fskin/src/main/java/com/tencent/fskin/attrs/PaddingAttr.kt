@@ -1,5 +1,6 @@
 package com.tencent.fskin.attrs
 
+import android.content.res.Resources
 import android.view.View
 import com.tencent.fskin.SkinManager
 import com.tencent.fskin.SkinElementAttr
@@ -14,10 +15,10 @@ class PaddingAttr : SkinElementAttr() {
         const val TAG = "PaddingAttr"
     }
 
-    override fun apply(view: View?) {
-        super.apply(view)
+    override fun apply(view: View?, resources: Resources) {
+        super.apply(view, resources)
         view?.run {
-            val padding = SkinManager.skinResourcesProxy.getDimension(attrValueRefId).toInt()
+            val padding = resources.getDimension(attrValueRefId).toInt()
 
             when (attrName) {
                 "padding" -> {

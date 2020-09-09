@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.util.TypedValue
+import com.tencent.fskin.util.DLog
 
 
 /**
@@ -16,7 +17,7 @@ import android.util.TypedValue
  * 拦截Resource读取资源的方法，先
  *
  */
-class SkinResourcesProxy(var resources: Resources)
+class SkinResourcesProxy(resources: Resources)
     : Resources(resources.assets, resources.displayMetrics, resources.configuration) {
 
     companion object {
@@ -42,7 +43,12 @@ class SkinResourcesProxy(var resources: Resources)
      * 根据资源ID，在皮肤包里加载一次
      */
     private fun getResourceIdInSkin(id: Int): Int {
-        return skinResource?.run {
+
+        val start = System.currentTimeMillis()
+
+
+        Thread.sleep(0)
+        val id =  skinResource?.run {
             try {
                 // 根据资源ID获取在类型
                 val type = this@SkinResourcesProxy.getResourceTypeName(id)
@@ -65,6 +71,12 @@ class SkinResourcesProxy(var resources: Resources)
                 0
             }
         } ?: 0
+
+        val end = System.currentTimeMillis() - start
+
+        DLog.d(TAG, "convert id time:$end")
+
+        return id
     }
 
 

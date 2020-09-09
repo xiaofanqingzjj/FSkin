@@ -63,6 +63,11 @@ object SkinElementAttrFactory {
         return skinAttr
     }
 
+    /**
+     * 某一个xml属性是否支持换肤
+     *
+     * @param attrName xml的属性名
+     */
     fun isSupportedAttr(attrName: String): Boolean {
         return supportSkinAttrs.keys.contains(attrName)
     }

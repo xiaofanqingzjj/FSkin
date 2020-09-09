@@ -1,7 +1,7 @@
 package com.tencent.fskin.attrs
 
+import android.content.res.Resources
 import android.view.View
-import com.tencent.fskin.SkinManager
 import com.tencent.fskin.SkinElementAttr
 
 
@@ -13,14 +13,15 @@ import com.tencent.fskin.SkinElementAttr
  */
 class BackgroundAttr : SkinElementAttr() {
 
-    override fun apply(view: View?) {
-        super.apply(view)
+    override fun apply(view: View?, skinResourcesProxy: Resources) {
+        super.apply(view, skinResourcesProxy)
 
+//        view?.context?.obtainStyledAttributes()
 
         view?.run {
             when (attrValueTypeName) {
-                "color" -> setBackgroundColor(SkinManager.skinResourcesProxy.getColor(attrValueRefId))
-                "drawable" -> background = (SkinManager.skinResourcesProxy.getDrawable(attrValueRefId))
+                "color" -> setBackgroundColor(skinResourcesProxy.getColor(attrValueRefId))
+                "drawable" -> background = (skinResourcesProxy.getDrawable(attrValueRefId))
             }
         }
     }

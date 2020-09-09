@@ -1,13 +1,23 @@
 package com.tencent.fskin.demo.base
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import com.tencent.fskin.demo.R
 import kotlinx.android.synthetic.main.activity_base.*
 
+
+/**
+ *
+ */
 open class BaseActivity: FragmentActivity() {
+
+    companion object {
+        const val TAG = "BaseActivity@@@"
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +27,14 @@ open class BaseActivity: FragmentActivity() {
         btn_back.setOnClickListener {
             finishAfterTransition()
         }
+
+        val layoutInflaterFromFrom = LayoutInflater.from(this)
+        val layoutInflaterFromGetService = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val fromActivity = layoutInflater
+
+        Log.d(TAG, "context:$this, \nfrom:$layoutInflaterFromFrom\n" +
+                "getService:$layoutInflaterFromGetService\n" +
+                "fromActivity:$fromActivity")
     }
 
     fun hideBackBtn() {

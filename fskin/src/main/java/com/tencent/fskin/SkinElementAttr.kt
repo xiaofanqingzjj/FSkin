@@ -1,5 +1,6 @@
 package com.tencent.fskin
 
+import android.content.res.Resources
 import android.util.Log
 import android.view.View
 import com.tencent.tfkin.BuildConfig
@@ -37,16 +38,16 @@ abstract class SkinElementAttr(
 
 
 
-    internal fun initApply(view: View?) {
+    internal fun initApply(view: View?, skinResource: Resources) {
         if (!SkinManager.isDefaultSkin()) {
-            apply(view)
+            apply(view, skinResource)
         }
     }
 
     /**
      * 当皮肤改变的时候重新给View对应的属性设置皮肤包里的新值
      */
-    open fun apply(view: View?) {
+    open fun apply(view: View?, skinResource: Resources) {
         if (BuildConfig.DEBUG) {
             Log.d("SkinElementAttr", "apply attr:$this, view:$view")
         }

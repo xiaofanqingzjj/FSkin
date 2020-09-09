@@ -1,5 +1,6 @@
 package com.tencent.fskin
 
+import android.content.res.Resources
 import android.view.View
 import java.util.*
 
@@ -22,18 +23,18 @@ data class SkinElement(
 
 
 
-    internal fun initApply() {
+    internal fun initApply(skinResource: Resources) {
         if (!SkinManager.isDefaultSkin()) {
-            apply()
+            apply(skinResource)
         }
     }
 
     /**
      * 通知皮肤修改了
      */
-    fun apply() {
+    fun apply(skinResource: Resources) {
         attrs.forEach {
-            it.apply(view)
+            it.apply(view, skinResource)
         }
     }
 

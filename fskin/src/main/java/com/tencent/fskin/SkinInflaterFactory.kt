@@ -7,14 +7,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import com.tencent.tfkin.BuildConfig
-import kotlin.collections.ArrayList
 
 
 /**
  * 一个LayoutInflater Factory
  *
- * 拦截所有XML中的View创建，检查View是否有
+ * 拦截所有XML中的View创建，检查View是否有支持换肤的属性，如果有的话，
  *
+ * @author fortunexiao
  */
 class SkinInflaterFactory : LayoutInflater.Factory {
 
@@ -22,6 +22,13 @@ class SkinInflaterFactory : LayoutInflater.Factory {
         private const val DEBUG = true
 
         const val TAG = "SkinInflaterFactory@@"
+
+        private val sClassPrefixList = arrayOf(
+                "android.view.",
+                "android.widget.",
+                "android.webkit.",
+                "android.app."
+        )
     }
 
     /**
@@ -30,50 +37,52 @@ class SkinInflaterFactory : LayoutInflater.Factory {
     internal val mSkinItems: MutableMap<View, SkinElement> = mutableMapOf()
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? { // if this is NOT enable to be skined , simplly skip it
+
         // 先收集属性，看是否有换肤支持的属性，如果没有，则不拦截
         val skinAttrs = parseSkinAttr(context, attrs)
+
         if (skinAttrs.isEmpty()) {
             return null
         }
 
-        val view = createView(context, name, attrs) ?: return null
+        // 拦截View的创建
+        val view = createViewByOrgLayoutInflate(context, name, attrs)
 
-        mSkinItems[view] = SkinElement(view, skinAttrs).apply {
-            initApply()
+        if (view != null && skinAttrs.isNotEmpty()) {
+
+            val element = SkinElement(view, skinAttrs)
+
+            // 初始换肤
+            element.initApply(SkinManager.skinResourcesProxy)
+
+            mSkinItems[view] = element
+
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "onCreateView context:$context, name:$name, skinItem:${mSkinItems[view]}")
+            }
+
         }
-
         return view
     }
 
-    private fun createView(context: Context, name: String, attrs: AttributeSet): View? {
+    private fun createViewByOrgLayoutInflate(context: Context, name: String, attrs: AttributeSet): View? {
 
+        val layoutInflater = LayoutInflater.from(context)
         var view: View? = null
-        try {
-            if (-1 == name.indexOf('.')) { // 系统自带的widget
-
-                if ("View" == name) {
-                    view = LayoutInflater.from(context).createView(name, "android.view.", attrs)
+        if (-1 == name.indexOf('.')) { // 不是全路径，表示是系统自带的widget
+            for (prefix in sClassPrefixList) {
+                try {
+                    view = layoutInflater.createView(name, prefix, attrs)
+                    if (view != null) {
+                        break
+                    }
+                } catch (e: ClassNotFoundException) {
+                    // In this case we want to let the base class take a crack
+                    // at it.
                 }
-
-                if (view == null) {
-                    view = LayoutInflater.from(context).createView(name, "android.widget.", attrs)
-                }
-
-                if (view == null) {
-                    view = LayoutInflater.from(context).createView(name, "android.webkit.", attrs)
-                }
-
-            } else {
-                view = LayoutInflater.from(context).createView(name, null, attrs)
             }
-
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "onCreateView context:$context, name:$name")
-            }
-
-        } catch (e: Exception) {
-            Log.e(TAG, "error while create 【" + name + "】 : " + e.message)
-            view = null
+        } else {
+            view = layoutInflater.createView(name, null, attrs)
         }
         return view
     }
@@ -81,10 +90,13 @@ class SkinInflaterFactory : LayoutInflater.Factory {
     private fun parseSkinAttr(context: Context, attrs: AttributeSet) :  ArrayList<SkinElementAttr>{
         val viewAttrs: ArrayList<SkinElementAttr> = ArrayList()
 
+        // 循环所有的xml属性
         for (i in 0 until attrs.attributeCount) {
             val attrName = attrs.getAttributeName(i)
             val attrValue = attrs.getAttributeValue(i)
-            if (!SkinElementAttrFactory.isSupportedAttr(attrName)) { // 看属性是否是支持换肤的属性
+
+            // 看属性是否是支持换肤的属性
+            if (!SkinElementAttrFactory.isSupportedAttr(attrName)) {
                 continue
             }
 
@@ -112,7 +124,7 @@ class SkinInflaterFactory : LayoutInflater.Factory {
 
     fun applySkin() {
         mSkinItems.forEach {
-            it.value.apply()
+            it.value.apply(SkinManager.skinResourcesProxy)
         }
     }
 

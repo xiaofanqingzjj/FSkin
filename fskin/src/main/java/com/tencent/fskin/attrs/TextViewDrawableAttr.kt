@@ -1,9 +1,11 @@
 package com.tencent.fskin.attrs
 
+import android.content.res.Resources
 import android.view.View
 import android.widget.TextView
 import com.tencent.fskin.SkinManager
 import com.tencent.fskin.SkinElementAttr
+import com.tencent.fskin.SkinResourcesProxy
 
 
 /**
@@ -15,12 +17,12 @@ class TextViewDrawableAttr : SkinElementAttr() {
         const val TAG = "TextSizeAttr"
     }
 
-    override fun apply(view: View?) {
-        super.apply(view)
+    override fun apply(view: View?, skinResourcesProxy: Resources) {
+        super.apply(view, skinResourcesProxy)
 
         (view as? TextView)?.run {
 
-            val drawable = SkinManager.skinResourcesProxy.getDrawable(attrValueRefId)
+            val drawable = skinResourcesProxy.getDrawable(attrValueRefId)
             val cds = compoundDrawables //左上右下
 
             when (attrName) {

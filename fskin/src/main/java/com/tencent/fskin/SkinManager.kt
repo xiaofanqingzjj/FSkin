@@ -2,8 +2,9 @@ package com.tencent.fskin
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.content.res.AssetManager
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +13,6 @@ import com.tencent.fskin.util.PreferencesUtils
 import com.tencent.fskin.util.async
 import com.tencent.fskin.util.runUIThread
 import java.io.File
-import java.lang.RuntimeException
 
 
 /**
@@ -101,15 +101,23 @@ object SkinManager {
 
     /**
      * 当元素的属性值是通过代码设置的时候，需要手动把要换肤的元素和属性添加到皮肤框架中
+     *
+     * @param activity 换肤的界面
+     * @param view 换肤的View对象
+     * @param attrName View的xml属性名，要通过这个属性名来获取对应的SkinElementAttr对象的真实类型
+     * @param value 资源id
      */
     fun addSkinAttr(activity: Activity, view: View, attrName: String, value: Int) {
 
         // 如果不支持，则直接退出
         if (!SkinElementAttrFactory.isSupportedAttr(attrName)) return
 
+        //
         val activitySkinChange = mSkins[activity] ?: return
 
         val inflaterFactory = activitySkinChange.mSkinInflaterFactory
+
+
         val skinItems = inflaterFactory.mSkinItems
 
         if (!skinItems.keys.contains(view)) {
@@ -126,8 +134,33 @@ object SkinManager {
         attrs?.add(skinElementAttr)
 
         // 初始加进来的时候需要重新设置一下
-        skinElementAttr.initApply(view)
+        skinElementAttr.initApply(view, skinResourcesProxy)
     }
+
+//    fun addSkinAttr(activity: Activity, view: View, skinElementAttr: SkinElementAttr, value: Int) {
+//
+//        val activitySkinChange = mSkins[activity] ?: return
+//
+//        val inflaterFactory = activitySkinChange.mSkinInflaterFactory
+//
+//        val skinItems = inflaterFactory.mSkinItems
+//
+//        if (!skinItems.keys.contains(view)) {
+//            skinItems[view] = SkinElement(view)
+//        }
+//
+//        val attrs = skinItems[view]?.attrs
+//
+//        val entryName = activity.resources.getResourceEntryName(value)
+//        val typeName = activity.resources.getResourceTypeName(value)
+//
+//        val skinElementAttr = SkinElementAttrFactory.createSkinAttr(attrName, value, entryName, typeName) ?: return
+//
+//        attrs?.add(skinElementAttr)
+//
+//        // 初始加进来的时候需要重新设置一下
+//        skinElementAttr.initApply(view)
+//    }
 
 
     /**
@@ -137,6 +170,9 @@ object SkinManager {
         val mSkinInflaterFactory = SkinInflaterFactory()
 
         init {
+
+//            activity?.window?.setBackgroundDrawable()
+
             // 给ActivityLayoutInflater设置一个Factory来拦截所有的View创建
             activity.layoutInflater.factory = mSkinInflaterFactory
         }
@@ -209,15 +245,16 @@ object SkinManager {
         val pm = context.packageManager
         return try {
             val skinPackageInfo = pm.getPackageArchiveInfo(skinPkgPath, PackageManager.GET_ACTIVITIES)
+            skinPackageName = skinPackageInfo?.packageName
 
-            skinPackageName = skinPackageInfo.packageName
+//            val skinAssetManager = AssetManager::class.java.newInstance()
+//            val addAssetPathMethod = skinAssetManager.javaClass.getMethod("addAssetPath", String::class.java)
+//            addAssetPathMethod.invoke(skinAssetManager, skinPkgPath)
+//
+//            val resources: Resources = context.resources
+//            val skinResource = Resources(skinAssetManager, resources.displayMetrics, resources.configuration)
 
-            val skinAssetManager = AssetManager::class.java.newInstance()
-            val addAssetPathMethod = skinAssetManager.javaClass.getMethod("addAssetPath", String::class.java)
-            addAssetPathMethod.invoke(skinAssetManager, skinPkgPath)
-
-            val resources: Resources = context.resources
-            val skinResource = Resources(skinAssetManager, resources.displayMetrics, resources.configuration)
+            val skinResource = getResourceFromSkinPath(context, skinPkgPath)
 
             Pair(skinResource, null)
         } catch (e: java.lang.Exception) {
@@ -227,6 +264,63 @@ object SkinManager {
         }
     }
 
+
+//    private class
+
+    /**
+     * 根据skinPath创建Resource对象
+     */
+    private fun getResourceFromSkinPath(context: Context, skinPkgPath: String): Resources? {
+//        return try {
+//            val skinAssetManager = AssetManager::class.java.newInstance()
+//            val addAssetPathMethod = skinAssetManager.javaClass.getMethod("addAssetPath", String::class.java)
+//            addAssetPathMethod.invoke(skinAssetManager, skinPkgPath)
+//
+//            val resources: Resources = context.resources
+//            Resources(skinAssetManager, resources.displayMetrics, resources.configuration)
+//        } catch (e: java.lang.Exception) {
+//            null
+//        }
+
+        return try {
+            //
+            val packageInfo: PackageInfo = context.packageManager.getPackageArchiveInfo(skinPkgPath, 0) ?: return null
+            packageInfo.applicationInfo.sourceDir = skinPkgPath
+            packageInfo.applicationInfo.publicSourceDir = skinPkgPath
+
+            val res: Resources = context.packageManager.getResourcesForApplication(packageInfo.applicationInfo)
+
+            val superRes: Resources = context.resources
+
+            return Resources(res.assets, superRes.displayMetrics, superRes.configuration)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+
+    /**
+     * 获取皮肤包资源[Resources].
+     *
+     * @param skinPkgPath sdcard中皮肤包路径.
+     * @return
+     */
+    fun getSkinResources(context: Context, skinPkgPath: String): Resources? {
+        try {
+            val packageInfo: PackageInfo = context.packageManager.getPackageArchiveInfo(skinPkgPath, 0) ?: return null
+            packageInfo.applicationInfo.sourceDir = skinPkgPath
+            packageInfo.applicationInfo.publicSourceDir = skinPkgPath
+
+            val res: Resources = context.packageManager.getResourcesForApplication(packageInfo.applicationInfo)
+
+            val superRes: Resources = context.resources
+            return Resources(res.assets, superRes.displayMetrics, superRes.configuration)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
 
 
 
@@ -261,11 +355,15 @@ object SkinManager {
         }
 
         isApplying = true
+
+
         if (skinPkgPath.isNullOrEmpty()) {
 
             changeCallback?.onStart()
 
             restoreDefaultTheme()
+
+
             runUIThread {
                 changeCallback?.onSuccess()
                 isApplying = false
