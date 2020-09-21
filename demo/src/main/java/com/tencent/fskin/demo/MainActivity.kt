@@ -2,7 +2,7 @@ package com.tencent.fskin.demo
 
 import android.Manifest
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tencent.fskin.SkinManager
 import com.tencent.fskin.demo.base.BaseActivity
 import com.tencent.fskin.demo.base.FragmentTabHost
