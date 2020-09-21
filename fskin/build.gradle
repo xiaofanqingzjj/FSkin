@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+
+apply from: "$rootDir/publish2Rep.gradle"
+
 android {
     compileSdkVersion compile_sdk_version
 
@@ -23,3 +26,5 @@ dependencies {
     implementation "com.android.support:support-v4:$support_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+
+

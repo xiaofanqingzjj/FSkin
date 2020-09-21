@@ -37,15 +37,15 @@ dependencies {
 final def TARGET_SKIN_DIR = '../skin-package/'
 
 
-task testCopy << {
-    copy {
-        from('build/outputs/apk/debug')
-        into(TARGET_SKIN_DIR)
-        include '*.apk'
-        exclude '**/*-unaligned.apk'
-        rename ('android-skin-loader-skin-debug.apk', skinName)
-    }
-}
+//task testCopy << {
+//    copy {
+//        from('build/outputs/apk/debug')
+//        into(TARGET_SKIN_DIR)
+//        include '*.apk'
+//        exclude '**/*-unaligned.apk'
+//        rename ('android-skin-loader-skin-debug.apk', skinName)
+//    }
+//}
 
 
 gradle.projectsEvaluated {

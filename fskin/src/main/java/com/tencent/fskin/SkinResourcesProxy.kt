@@ -47,7 +47,7 @@ class SkinResourcesProxy(resources: Resources)
         val start = System.currentTimeMillis()
 
 
-        Thread.sleep(0)
+//        Thread.sleep(0)
         val id =  skinResource?.run {
             try {
                 // 根据资源ID获取在类型

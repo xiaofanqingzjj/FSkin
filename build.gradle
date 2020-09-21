@@ -10,9 +10,14 @@ buildscript {
             name 'Google'
         }
 
+//        maven {
+//            url TENCENT_PUBLIC
+//            name 'tencent_public'
+//        }
+
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:3.6.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" // 这里要引入kotlin插件
 
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
@@ -25,6 +30,12 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+
+        maven {
+            url TENCENT_PUBLIC
+            name 'tencent_public'
+        }
+
         maven {
             url 'https://maven.google.com/'
             name 'Google'

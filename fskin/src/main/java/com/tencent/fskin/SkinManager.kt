@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -175,11 +177,32 @@ object SkinManager {
 
             // 给ActivityLayoutInflater设置一个Factory来拦截所有的View创建
             activity.layoutInflater.factory = mSkinInflaterFactory
+
+            loadWindowBackground(activity)
         }
 
         override fun onChange() {
             mSkinInflaterFactory.applySkin()
         }
+    }
+
+    private fun loadWindowBackground(activity: Activity) {
+        val attrId = android.R.attr.windowBackground
+        val attrs = intArrayOf(attrId)
+        val a = activity.obtainStyledAttributes(attrs)
+        val backgroundResId = a.getResourceId(0, 0)
+        if (backgroundResId != 0) {
+            val backgraound = skinResourcesProxy?.getDrawable(backgroundResId)
+            if (backgraound != null) {
+
+            }
+        }
+
+        activity?.window?.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+
+//        val value = a.getDrawable(0)
+//        a.recycle()
+//        return value
     }
 
 

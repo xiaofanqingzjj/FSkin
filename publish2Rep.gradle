@@ -1,0 +1,41 @@
+
+
+
+ext {
+
+    // 读取系统环境变量的值
+    localRepUrl = "file://${System.getenv("LOCAL_MAVEN_REP")}"
+    repUrl = TENCENT_PUBLIC
+    snapshotRepUrl = TENCENT_SNAPSHOTS
+
+    groupId = "com.tencent"
+    artifactId = "fskin"
+    versions = "1.0.2-SNAPSHOT"
+
+    repoUserName = "x"
+    repoPwd = "x"
+}
+
+// 允许发布组件到仓库
+apply plugin: 'maven'
+
+uploadArchives {
+
+    repositories.mavenDeployer {
+
+        // 要发布的仓库地址
+        repository(url: "$repUrl") {
+            //仓库的用户名和密码
+            authentication(userName: repoUserName, password: repoPwd)
+        }
+
+        snapshotRepository(url: snapshotRepUrl) {
+            authentication(userName: repoUserName, password: repoPwd)
+        }
+
+        // 配置artifactId
+        pom.groupId = groupId
+        pom.artifactId = artifactId
+        pom.version = versions
+    }
+}
